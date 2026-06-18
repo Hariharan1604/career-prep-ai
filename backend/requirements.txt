@@ -1,0 +1,41 @@
+# FastAPI & Server
+fastapi==0.115.0
+uvicorn[standard]==0.30.0
+python-multipart==0.0.9
+
+# Supabase
+supabase==2.9.1
+
+# Auth
+python-jose[cryptography]==3.3.0
+passlib[bcrypt]==1.7.4
+bcrypt==4.2.0
+
+# ML & NLP
+torch==2.4.0
+transformers==4.44.0
+sentence-transformers==3.0.0
+faiss-cpu==1.8.0
+
+# PDF Parsing
+pdfplumber==0.11.0
+
+# Data
+numpy==1.26.4
+pandas==2.2.0
+
+# Course APIs
+google-api-python-client==2.140.0
+requests==2.32.0
+beautifulsoup4==4.12.3
+chardet<6.0.0
+
+# Export
+reportlab==4.2.0
+
+# Environment
+python-dotenv==1.0.1
+pydantic[email]==2.9.0
+
+# CORS
+aiofiles==24.1.0

@@ -1,0 +1,34 @@
+{
+  "Data Analyst": {
+    "required": ["SQL", "Python", "Excel", "Power BI", "Statistics", "Data Visualization"],
+    "good_to_have": ["Tableau", "R", "Pandas", "NumPy", "Machine Learning", "Data Cleaning"]
+  },
+  "Python Developer": {
+    "required": ["Python", "Django", "Flask", "REST APIs", "Git", "SQL", "OOP"],
+    "good_to_have": ["Docker", "Redis", "Celery", "AWS", "PostgreSQL", "Unit Testing"]
+  },
+  "Web Developer": {
+    "required": ["HTML", "CSS", "JavaScript", "React", "Git", "REST APIs", "Responsive Design"],
+    "good_to_have": ["TypeScript", "Node.js", "Tailwind CSS", "Webpack", "Testing", "Figma"]
+  },
+  "Frontend Developer": {
+    "required": ["HTML", "CSS", "JavaScript", "React", "TypeScript", "Git", "UI/UX"],
+    "good_to_have": ["Next.js", "Redux", "GraphQL", "Testing", "Figma", "Performance Optimization"]
+  },
+  "Backend Developer": {
+    "required": ["Python", "Node.js", "SQL", "REST APIs", "Git", "Databases", "Authentication"],
+    "good_to_have": ["Docker", "Microservices", "Redis", "Message Queues", "AWS", "CI/CD"]
+  },
+  "ML Engineer": {
+    "required": ["Python", "Machine Learning", "Deep Learning", "TensorFlow", "PyTorch", "Statistics", "Data Preprocessing"],
+    "good_to_have": ["NLP", "Computer Vision", "MLOps", "Docker", "AWS", "Pandas", "Scikit-learn"]
+  },
+  "Java Developer": {
+    "required": ["Java", "Spring Boot", "SQL", "REST APIs", "OOP", "Git", "Maven"],
+    "good_to_have": ["Microservices", "Docker", "Kafka", "AWS", "JUnit", "Hibernate", "Design Patterns"]
+  },
+  "DevOps Engineer": {
+    "required": ["Linux", "Docker", "Kubernetes", "CI/CD", "AWS", "Git", "Shell Scripting"],
+    "good_to_have": ["Terraform", "Ansible", "Monitoring", "Jenkins", "Python", "Networking", "Security"]
+  }
+}
