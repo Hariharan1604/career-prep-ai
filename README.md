@@ -8,9 +8,9 @@ Career Prep AI is a full-stack, AI-powered platform designed to help job seekers
 
 * **Instant Resume Parsing:** Extracts structured profile data (Experience, Projects, Education, Skills) from PDF resumes.
 * **Semantic Skill Gap Analysis:** Uses NLP (`sentence-transformers`) to compute cosine similarity between a candidate's skills and the required skills for a role—handling synonyms perfectly.
-* **AI Interview Generation:** Google Gemini generates technical, project-based, and behavioral interview questions tailored to your exact skill gaps.
-* **Smart Ranking:** Uses a Cross-Encoder model to rank generated interview questions by relevance.
-* **Personalized Roadmap:** Automatically recommends courses to fill in your missing skills.
+* **AI Interview Generation:** A local `google/flan-t5-small` model generates technical and project-based interview questions tailored to your exact skill gaps.
+* **Smart Ranking:** Uses a Cross-Encoder model (`ms-marco-MiniLM-L-6-v2`) to rank generated interview questions by relevance.
+* **Personalized Roadmap:** Automatically recommends courses to fill in your missing skills using the YouTube Data API.
 * **Power BI Integration:** Includes an immersive, dark-themed analytics dashboard built with Recharts (10+ interactive charts) and a dataset exporter for actual Power BI desktop usage.
 * **Automated PDF Reports:** Generates professional, multi-page career analysis reports via `reportlab`.
 
@@ -25,7 +25,7 @@ Career Prep AI is a full-stack, AI-powered platform designed to help job seekers
 ### Backend
 * **Framework:** FastAPI, Python, Uvicorn
 * **Database & Auth:** Supabase (PostgreSQL + Supabase Auth)
-* **ML Libraries:** `pdfplumber`, `sentence-transformers`, `cross-encoder`, Google Gemini AI API
+* **ML Libraries:** `pdfplumber`, `sentence-transformers`, `transformers`, `cross-encoder`
 * **Exports:** `reportlab` (PDF generation)
 
 ## 📦 Getting Started
@@ -54,7 +54,9 @@ Career Prep AI is a full-stack, AI-powered platform designed to help job seekers
    ```env
    SUPABASE_URL=your-supabase-url
    SUPABASE_KEY=your-supabase-anon-key
-   GEMINI_API_KEY=your-google-gemini-key
+   SUPABASE_SERVICE_KEY=your-supabase-service-role-key
+   YOUTUBE_API_KEY=your-youtube-api-key
+   JWT_SECRET=your-jwt-secret
    ```
 5. Run the server:
    ```bash
@@ -83,7 +85,7 @@ Career Prep AI is a full-stack, AI-powered platform designed to help job seekers
 
 ## 🧠 Machine Learning Architecture
 
-1. **Extraction:** The user's PDF is processed by `pdfplumber` and Gemini to output strict JSON.
-2. **Matching:** `all-MiniLM-L6-v2` compares candidate skills against JD skills.
-3. **Question Gen:** Gemini prompts construct context-aware questions.
-4. **Ranking:** `ms-marco-MiniLM-L-6-v2` scores the generated questions based on the target role context to filter out hallucinations or low-relevance questions.
+1. **Extraction:** The user's PDF is processed by `pdfplumber` and Regex heuristics to output strict JSON.
+2. **Matching:** `all-MiniLM-L6-v2` computes cosine similarity between candidate skills and JD skills.
+3. **Question Gen:** A local `google/flan-t5-small` model and curated question banks construct context-aware questions.
+4. **Ranking:** `ms-marco-MiniLM-L-6-v2` scores the generated questions based on the target role context to filter out low-relevance questions.
