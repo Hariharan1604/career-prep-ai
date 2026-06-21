@@ -31,7 +31,17 @@ export default function SignupPage() {
       await signup(fullName, email, password);
       router.push('/');
     } catch (err: any) {
-      setError(err.response?.data?.detail || 'Failed to create an account. Please try again.');
+      console.error(err);
+      if (!err.response) {
+        setError('Cannot connect to server. Please ensure the backend is running.');
+      } else {
+        const detail = err.response?.data?.detail;
+        if (Array.isArray(detail)) {
+          setError(detail[0]?.msg || 'Validation error.');
+        } else {
+          setError(detail || 'Failed to create an account. Please try again.');
+        }
+      }
     } finally {
       setIsSubmitting(false);
     }

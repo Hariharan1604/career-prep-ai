@@ -59,12 +59,17 @@ def signup_user(email: str, password: str, full_name: str) -> dict:
     user_id = auth_response.user.id
 
     # Store profile in profiles table
-    db.table("profiles").insert({
-        "id": user_id,
-        "email": email,
-        "full_name": full_name,
-        "password_hash": hash_password(password),
-    }).execute()
+    try:
+        db.table("profiles").insert({
+            "id": user_id,
+            "email": email,
+            "full_name": full_name,
+            "password_hash": hash_password(password),
+        }).execute()
+    except Exception as e:
+        # If storing the profile fails, clean up the user from auth to prevent orphaned users
+        db.auth.admin.delete_user(user_id)
+        raise HTTPException(status_code=400, detail=f"Failed to create user profile: {str(e)}")
 
     token = create_access_token(user_id, email)
     return {
