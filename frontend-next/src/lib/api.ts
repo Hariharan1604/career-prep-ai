@@ -3,7 +3,11 @@ import axios from 'axios';
 // Ensure this works for SSR as well, fallback to localhost if window is undefined
 const getBaseURL = () => {
   if (process.env.NEXT_PUBLIC_API_URL) {
-    return process.env.NEXT_PUBLIC_API_URL;
+    let url = process.env.NEXT_PUBLIC_API_URL;
+    if (!url.endsWith('/api')) {
+      url = url.replace(/\/$/, '') + '/api';
+    }
+    return url;
   }
   if (typeof window !== 'undefined') {
     // If we're on localhost, use localhost:8000
