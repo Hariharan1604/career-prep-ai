@@ -1,462 +1,148 @@
-'use client';
-
-import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { api } from '@/lib/api';
-import { useAuth } from '@/contexts/AuthContext';
-import { 
-  Zap, Target, CheckCircle2, AlertTriangle, Briefcase, ChevronDown, ChevronUp, Server, ShieldAlert, ArrowRight, Loader2, History, Target as TargetIcon, BarChart3, Download, Database, GraduationCap
-} from 'lucide-react';
-import { ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar } from 'recharts';
+import { PublicNav } from '@/components/layout/PublicNav';
+import { ArrowRight, CheckCircle2, ShieldAlert, Server, PlayCircle, Activity } from 'lucide-react';
 
-export default function Dashboard() {
-  const { user } = useAuth();
-  const [latestAnalysis, setLatestAnalysis] = useState<any>(null);
-  const [history, setHistory] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [openIndex, setOpenIndex] = useState<string | null>(null);
-  const [isExportingPDF, setIsExportingPDF] = useState(false);
+export default function LandingPage() {
+  return (
+    <div className="min-h-screen bg-[var(--color-background)] font-sans selection:bg-[var(--color-accent)] selection:text-white relative overflow-hidden">
+      
+      {/* Background decorations to match the glassmorphic feel */}
+      <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-blue-400/10 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] bg-[var(--color-accent)]/10 rounded-full blur-[120px] pointer-events-none" />
+      
+      {/* Concentric circles background mimicking the image */}
+      <div className="absolute top-1/2 right-[10%] transform -translate-y-1/2 w-[800px] h-[800px] rounded-full border border-[var(--color-border)]/30 pointer-events-none" />
+      <div className="absolute top-1/2 right-[15%] transform -translate-y-1/2 w-[600px] h-[600px] rounded-full border border-[var(--color-border)]/30 pointer-events-none" />
+      <div className="absolute top-1/2 right-[20%] transform -translate-y-1/2 w-[400px] h-[400px] rounded-full border border-[var(--color-border)]/30 pointer-events-none" />
 
-  useEffect(() => {
-    const load = async () => {
-      try {
-        const histRes = await api.get('/analysis/history');
-        const historyData = histRes.data;
-        setHistory(historyData);
+      {/* Navbar */}
+      <PublicNav />
+
+      {/* Hero Section */}
+      <main id="home" className="relative z-10 max-w-7xl mx-auto px-8 pt-12 pb-24 lg:pt-24 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
         
-        if (historyData && historyData.length > 0) {
-          const latestRes = await api.get(`/analysis/${historyData[0].id}`);
-          setLatestAnalysis(latestRes.data);
-        }
-      } catch (err) {
-        console.error('Dashboard load error:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    load();
-  }, []);
-
-  const handleExportPDF = async () => {
-    if (!latestAnalysis) return;
-    setIsExportingPDF(true);
-    try {
-      const res = await api.get(`/export/pdf/${latestAnalysis.id}`, { responseType: 'blob' });
-      const url = window.URL.createObjectURL(new Blob([res.data]));
-      const link = document.createElement('a');
-      link.href = url;
-      link.setAttribute('download', `career_prep_analysis_${latestAnalysis.id.substring(0, 8)}.pdf`);
-      document.body.appendChild(link);
-      link.click();
-      link.parentNode?.removeChild(link);
-    } catch (err) {
-      console.error('PDF Export failed', err);
-    } finally {
-      setIsExportingPDF(false);
-    }
-  };
-
-  if (loading) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-[60vh]">
-        <Loader2 className="w-10 h-10 text-[var(--color-accent)] animate-spin mb-4" />
-        <h3 className="text-xl font-medium text-[var(--color-foreground)]">Loading your dashboard...</h3>
-      </div>
-    );
-  }
-
-  if (!latestAnalysis) {
-    return (
-      <div className="space-y-8 pb-12">
-        <div className="relative rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-8 overflow-hidden shadow-sm">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-blue-400/10 rounded-full blur-3xl pointer-events-none"></div>
-          <div className="relative flex flex-col md:flex-row md:items-center justify-between gap-6 z-10">
-            <div>
-              <p className="text-sm font-semibold text-[var(--color-accent)] uppercase tracking-widest mb-2">Welcome back 👋</p>
-              <h2 className="text-3xl font-bold text-[var(--color-foreground)] tracking-tight">
-                {user?.full_name || 'Career Seeker'}
-              </h2>
-              <p className="text-[var(--color-muted)] mt-2">Run your first analysis to get started!</p>
-            </div>
-            <Link
-              href="/analysis"
-              className="flex items-center px-6 py-3 bg-[var(--color-accent)] text-white font-semibold rounded-xl shadow-md hover:bg-[var(--color-accent-hover)] transform hover:-translate-y-0.5 transition-all whitespace-nowrap"
+        {/* Left Column: Text & CTA */}
+        <div className="flex flex-col items-start max-w-xl">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[var(--color-surface)] border border-[var(--color-border)] text-xs font-medium text-[var(--color-muted)] mb-6 shadow-sm">
+            <span className="text-[var(--color-accent)]">✨</span> Next-Gen AI Interview Prep
+          </div>
+          
+          <h1 className="text-5xl lg:text-6xl font-extrabold text-[var(--color-foreground)] tracking-tight leading-[1.1] mb-6">
+            Smart, Personalized, and <span className="text-[var(--color-accent)] opacity-90">Intelligent Career Prep</span>
+          </h1>
+          
+          <p className="text-lg text-[var(--color-muted)] mb-10 leading-relaxed">
+            Experience lightning-fast interview preparation. Upload your resume, discover your skill gaps in real time, and track your personalized learning roadmap inside a beautifully calm, glassmorphic workspace.
+          </p>
+          
+          <div className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto mb-8">
+            <Link 
+              href="/signup"
+              className="w-full sm:w-auto px-8 py-3.5 rounded-xl bg-[var(--color-accent)] hover:bg-[var(--color-accent-hover)] text-white font-semibold flex items-center justify-center gap-2 transition-all shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
             >
-              <Zap className="w-5 h-5 mr-2" />
-              New Analysis
+              Access Career Portal <ArrowRight className="w-4 h-4" />
+            </Link>
+            <Link 
+              href="#"
+              className="w-full sm:w-auto px-8 py-3.5 rounded-xl bg-[var(--color-surface)] border border-[var(--color-border)] text-[var(--color-foreground)] font-semibold flex items-center justify-center gap-2 hover:bg-[var(--color-background)] transition-colors shadow-sm"
+            >
+              Explore Features
+            </Link>
+          </div>
+          
+          <div className="flex items-center gap-6 text-sm text-[var(--color-muted)] font-medium">
+            <Link href="#" className="flex items-center gap-1.5 hover:text-[var(--color-foreground)] transition-colors">
+              <PlayCircle className="w-4 h-4" /> What is Career Prep AI?
+            </Link>
+            <Link href="#" className="flex items-center gap-1.5 hover:text-[var(--color-foreground)] transition-colors">
+              <Activity className="w-4 h-4" /> View Success Rates
             </Link>
           </div>
         </div>
 
-        <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-16 flex flex-col items-center justify-center text-center shadow-sm">
-          <Target className="w-12 h-12 text-[var(--color-muted)] mb-4 opacity-50" />
-          <h3 className="text-xl font-semibold text-[var(--color-foreground)] mb-2">No analyses yet</h3>
-          <p className="text-[var(--color-muted)] max-w-sm mb-6 text-sm">
-            Upload your resume and pick a target role to run your first career analysis.
-          </p>
-          <Link
-            href="/analysis"
-            className="px-6 py-2.5 bg-[var(--color-accent)] text-white font-medium rounded-xl hover:bg-[var(--color-accent-hover)] transition-all shadow-sm"
-          >
-            Start First Analysis
-          </Link>
-        </div>
-      </div>
-    );
-  }
-
-  const { target_role, readiness_score, profile, skills, questions, courses, job_description_text } = latestAnalysis;
-  const presentSkills = skills.filter((s: any) => s.status === 'present');
-  const missingSkills = skills.filter((s: any) => s.status === 'missing');
-  const requiredMissing = missingSkills.filter((s: any) => s.is_required);
-
-  const groupedQs = {
-    technical: questions.filter((q: any) => q.category === 'technical'),
-    project: questions.filter((q: any) => q.category === 'project'),
-    scenario: questions.filter((q: any) => q.category === 'scenario'),
-  };
-
-  const getQIcon = (cat: string) => {
-    switch(cat) {
-      case 'technical': return <Server className="w-5 h-5 text-[var(--color-accent)]" />;
-      case 'project': return <Zap className="w-5 h-5 text-yellow-500" />;
-      case 'scenario': return <ShieldAlert className="w-5 h-5 text-green-500" />;
-      default: return null;
-    }
-  };
-
-  const radarData = skills.map((skill: any) => ({
-    subject: skill.name.length > 12 ? skill.name.substring(0, 10) + '...' : skill.name,
-    score: skill.status === 'present' ? 100 : 20,
-  }));
-
-  return (
-    <div className="space-y-8 pb-12">
-      {/* Welcome Banner with Merged Header */}
-      <div className="relative rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] overflow-hidden shadow-sm">
-        <div className="absolute top-0 right-0 w-72 h-72 bg-blue-400/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute bottom-0 left-1/3 w-48 h-48 bg-yellow-400/10 rounded-full blur-3xl pointer-events-none" />
-
-        <div className="relative z-10 p-8">
-          <div className="flex flex-col md:flex-row md:items-start justify-between gap-6">
-            <div>
-              <p className="text-sm font-semibold text-[var(--color-accent)] uppercase tracking-widest mb-1">Welcome back 👋</p>
-              <h2 className="text-3xl font-bold text-[var(--color-foreground)] tracking-tight">
-                {user?.full_name || 'Career Seeker'}
-              </h2>
-            </div>
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-              <Link
-                href="/history"
-                className="flex items-center justify-center px-4 py-2.5 text-[var(--color-muted)] hover:text-[var(--color-foreground)] text-sm font-medium transition-colors"
-              >
-                <History className="w-4 h-4 mr-2" />
-                History
-              </Link>
-              <Link
-                href="/analysis"
-                className="flex items-center justify-center px-5 py-2.5 bg-[var(--color-accent)] text-white font-semibold rounded-xl shadow-md hover:bg-[var(--color-accent-hover)] transform hover:-translate-y-0.5 transition-all whitespace-nowrap"
-              >
-                <Zap className="w-4 h-4 mr-2" />
-                New Analysis
-              </Link>
-            </div>
-          </div>
-
-          <div className="my-6 border-t border-[var(--color-border)]" />
-
-          {/* Last Analysis Summary & Actions */}
-          <div className="flex flex-col md:flex-row justify-between md:items-center gap-6">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl bg-[var(--color-background)] border border-[var(--color-border)] flex items-center justify-center flex-shrink-0 shadow-sm">
-                <Briefcase className="w-6 h-6 text-[var(--color-accent)]" />
-              </div>
-              <div>
-                <p className="text-xs text-[var(--color-muted)] uppercase tracking-widest font-semibold mb-0.5">Role Last Applied</p>
-                <p className="text-lg font-bold text-[var(--color-foreground)] tracking-tight">{target_role}</p>
-                <p className="text-xs text-[var(--color-muted)] mt-0.5">
-                  Analysis generated on {new Date(latestAnalysis.created_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
-                </p>
-              </div>
-            </div>
-
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mt-4 md:mt-0">
-              <button 
-                onClick={handleExportPDF}
-                disabled={isExportingPDF}
-                className="flex items-center justify-center px-4 py-2.5 border border-[var(--color-border)] bg-[var(--color-surface)] hover:bg-[var(--color-background)] text-[var(--color-foreground)] font-medium rounded-xl transition-colors disabled:opacity-50 shadow-sm text-sm"
-              >
-                {isExportingPDF ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Download className="w-4 h-4 mr-2" />}
-                Download PDF
-              </button>
-              
-              <Link
-                href={`/analysis/${latestAnalysis.id}/powerbi`}
-                className="flex items-center justify-center px-4 py-2.5 bg-[#f2c811] text-black font-semibold rounded-xl hover:bg-yellow-500 transition-colors shadow-sm text-sm whitespace-nowrap"
-              >
-                <Database className="w-4 h-4 mr-2" />
-                Power BI Dashboard
-              </Link>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* TOP SECTION: Readiness & Profile */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6 flex flex-col items-center justify-center relative overflow-hidden shadow-sm">
-          <h3 className="text-sm font-bold uppercase tracking-widest text-[var(--color-muted)] mb-4">Readiness Score</h3>
-          <div className="relative w-40 h-40 flex items-center justify-center">
-            <svg className="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
-              <path className="text-[var(--color-background)]" strokeWidth="3" stroke="currentColor" fill="none"
-                d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-              <path className={`${readiness_score >= 70 ? 'text-green-500' : readiness_score >= 40 ? 'text-yellow-500' : 'text-red-500'}`} 
-                strokeDasharray={`${readiness_score}, 100`} strokeWidth="3" stroke="currentColor" fill="none"
-                d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-            </svg>
-            <div className="absolute flex flex-col items-center">
-              <span className="text-4xl font-black text-[var(--color-foreground)]">{readiness_score}</span>
-              <span className="text-xs text-[var(--color-muted)]">%</span>
-            </div>
-          </div>
-          <div className="mt-6 text-center text-sm">
-            {readiness_score >= 70 ? (
-              <p className="text-green-600 font-medium">You are well positioned for this role!</p>
-            ) : readiness_score >= 40 ? (
-              <p className="text-yellow-600 font-medium">Solid foundation. Focus on the gaps.</p>
-            ) : (
-              <p className="text-red-600 font-medium">Significant upskilling recommended.</p>
-            )}
-          </div>
-        </div>
-
-        <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6 lg:col-span-2 flex flex-col shadow-sm">
-          <h3 className="text-lg font-semibold text-[var(--color-foreground)] mb-4 border-b border-[var(--color-border)] pb-2">Profile Extracted</h3>
+        {/* Right Column: Glassmorphic UI Illustration */}
+        <div className="relative w-full aspect-square md:aspect-[4/3] lg:aspect-auto lg:h-[600px] flex items-center justify-center perspective-1000">
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4 flex-1">
-            <div>
-              <p className="text-xs text-[var(--color-muted)] uppercase tracking-wider font-semibold mb-1">Candidate Details</p>
-              <p className="text-[var(--color-foreground)] font-medium">{profile?.name || 'Not detected'}</p>
-              <p className="text-[var(--color-muted)] text-sm mt-0.5">{profile?.email || 'No email detected'}</p>
-              <p className="text-[var(--color-muted)] text-sm mt-0.5">{profile?.phone || 'No phone detected'}</p>
-            </div>
+          {/* Mock Browser/Dashboard Window */}
+          <div className="relative w-full max-w-lg bg-[var(--color-surface)]/80 backdrop-blur-xl border border-[var(--color-border)] rounded-2xl shadow-2xl p-6 transform rotate-y-[-5deg] rotate-x-[5deg] hover:rotate-y-0 hover:rotate-x-0 transition-transform duration-700 ease-out">
             
-            <div>
-              <p className="text-xs text-[var(--color-muted)] uppercase tracking-wider font-semibold mb-1">Education</p>
-              {profile?.education && profile.education.length > 0 ? (
-                profile.education.map((edu: any, i: number) => (
-                  <div key={i} className="flex items-start mb-1">
-                    <GraduationCap className="w-4 h-4 text-[var(--color-accent)] mr-2 mt-0.5 flex-shrink-0" />
-                    <span className="text-[var(--color-foreground)] text-sm">{edu.degree}</span>
+            {/* Window Controls */}
+            <div className="flex items-center gap-2 mb-6 border-b border-[var(--color-border)]/50 pb-4">
+              <div className="w-3 h-3 rounded-full bg-red-400"></div>
+              <div className="w-3 h-3 rounded-full bg-yellow-400"></div>
+              <div className="w-3 h-3 rounded-full bg-green-400"></div>
+            </div>
+
+            {/* Dashboard Mock Content */}
+            <div className="grid grid-cols-2 gap-4 mb-4">
+              <div className="bg-[var(--color-background)] rounded-xl p-4 border border-[var(--color-border)] shadow-inner flex flex-col justify-between">
+                <span className="text-[10px] font-bold text-[var(--color-muted)] uppercase tracking-wider mb-2">Readiness Score</span>
+                <span className="text-3xl font-black text-[var(--color-foreground)]">84<span className="text-sm text-[var(--color-muted)] font-normal">%</span></span>
+              </div>
+              <div className="bg-[var(--color-background)] rounded-xl p-4 border border-[var(--color-border)] shadow-inner flex flex-col justify-between">
+                <span className="text-[10px] font-bold text-[var(--color-muted)] uppercase tracking-wider mb-2">Skills Matched</span>
+                <span className="text-3xl font-black text-green-500">12<span className="text-sm text-[var(--color-muted)] font-normal">/15</span></span>
+              </div>
+            </div>
+
+            {/* Mock Items list */}
+            <div className="space-y-3">
+              <div className="bg-[var(--color-background)] rounded-xl p-4 border border-[var(--color-border)] flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-full bg-blue-50 border border-blue-100 flex items-center justify-center">
+                    <Server className="w-4 h-4 text-[var(--color-accent)]" />
                   </div>
-                ))
-              ) : (
-                <span className="text-[var(--color-muted)] text-sm italic">No education extracted</span>
-              )}
-            </div>
-
-            <div className="md:col-span-2 pt-2 border-t border-[var(--color-border)]">
-              <p className="text-xs text-[var(--color-muted)] uppercase tracking-wider font-semibold mb-2">Projects Found</p>
-              <div className="flex flex-wrap gap-2">
-                {profile?.projects && profile.projects.length > 0 ? (
-                  profile.projects.map((proj: string, i: number) => (
-                    <span key={i} className="px-2.5 py-1 bg-[var(--color-background)] border border-[var(--color-border)] rounded text-xs text-[var(--color-foreground)]">
-                      {proj}
-                    </span>
-                  ))
-                ) : (
-                  <span className="text-[var(--color-muted)] text-sm italic">No specific projects extracted</span>
-                )}
-              </div>
-            </div>
-            
-            {job_description_text && (
-              <div className="md:col-span-2 pt-2 border-t border-[var(--color-border)]">
-                <p className="text-xs text-[var(--color-muted)] uppercase tracking-wider font-semibold mb-2">Custom Job Description</p>
-                <div className="p-3 bg-[var(--color-background)] border border-[var(--color-border)] rounded-lg max-h-24 overflow-y-auto text-sm text-[var(--color-foreground)]">
-                  {job_description_text}
+                  <div>
+                    <p className="text-sm font-semibold text-[var(--color-foreground)]">Technical Interview Prep</p>
+                    <p className="text-[10px] text-[var(--color-muted)]">5 questions generated based on React & Node.js</p>
+                  </div>
                 </div>
+                <span className="px-2 py-1 bg-green-50 text-green-600 text-[9px] font-bold uppercase rounded-md border border-green-200">Ready</span>
               </div>
-            )}
-          </div>
-        </div>
-      </div>
-
-      {/* MIDDLE SECTION: SKILL GAP */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6 flex flex-col shadow-sm">
-          <h3 className="text-lg font-semibold text-[var(--color-foreground)] mb-6 border-b border-[var(--color-border)] pb-2">Skill Visualization</h3>
-          <div className="flex-1 flex items-center justify-center w-full min-h-[300px]">
-            <ResponsiveContainer width="100%" height={300}>
-              <RadarChart cx="50%" cy="50%" outerRadius="70%" data={radarData}>
-                <PolarGrid stroke="#E5E7EB" />
-                <PolarAngleAxis dataKey="subject" tick={{ fill: '#6B7280', fontSize: 11 }} />
-                <PolarRadiusAxis angle={30} domain={[0, 100]} tick={false} axisLine={false} />
-                <Radar name="Candidate" dataKey="score" stroke="#3B82F6" fill="#3B82F6" fillOpacity={0.4} />
-              </RadarChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
-
-        <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6 lg:col-span-2 shadow-sm">
-          <h3 className="text-lg font-semibold text-[var(--color-foreground)] mb-4 border-b border-[var(--color-border)] pb-2">Gap Analysis</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div>
-              <div className="flex items-center mb-4">
-                <CheckCircle2 className="w-5 h-5 text-green-500 mr-2" />
-                <h4 className="font-medium text-[var(--color-foreground)]">Matching Skills ({presentSkills.length})</h4>
+              
+              <div className="bg-[var(--color-background)] rounded-xl p-4 border border-[var(--color-border)] flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-full bg-yellow-50 border border-yellow-100 flex items-center justify-center">
+                    <ShieldAlert className="w-4 h-4 text-yellow-600" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-[var(--color-foreground)]">Missing Skill: Docker</p>
+                    <p className="text-[10px] text-[var(--color-muted)]">Critical requirement for target role</p>
+                  </div>
+                </div>
+                <span className="px-2 py-1 bg-yellow-50 text-yellow-600 text-[9px] font-bold uppercase rounded-md border border-yellow-200">Action Needed</span>
               </div>
-              <div className="flex flex-wrap gap-2">
-                {presentSkills.map((s: any, i: number) => (
-                  <span key={i} className="px-3 py-1.5 bg-green-50 border border-green-200 text-green-700 text-sm font-medium rounded-full">
-                    {s.name}
-                  </span>
-                ))}
-                {presentSkills.length === 0 && <span className="text-[var(--color-muted)] text-sm italic">No matching skills found.</span>}
+
+              <div className="bg-[var(--color-background)] rounded-xl p-4 border border-[var(--color-border)] flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-full bg-gray-50 border border-gray-200 flex items-center justify-center">
+                    <CheckCircle2 className="w-4 h-4 text-gray-500" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-[var(--color-foreground)]">Roadmap Milestone 1</p>
+                    <p className="text-[10px] text-[var(--color-muted)]">Complete Advanced System Design</p>
+                  </div>
+                </div>
+                <span className="px-2 py-1 bg-gray-100 text-gray-600 text-[9px] font-bold uppercase rounded-md border border-gray-200">In Progress</span>
               </div>
             </div>
-            <div>
-              <div className="flex items-center mb-4">
-                <ShieldAlert className="w-5 h-5 text-red-500 mr-2" />
-                <h4 className="font-medium text-[var(--color-foreground)]">Missing Critical Skills ({requiredMissing.length})</h4>
+
+            {/* Decorative Side Navigation indicators */}
+            <div className="absolute top-16 -left-4 flex flex-col gap-2">
+              <div className="w-8 h-8 rounded-lg bg-[var(--color-surface)] border border-[var(--color-border)] shadow-sm flex items-center justify-center">
+                <div className="w-4 h-4 rounded-full bg-[var(--color-muted)]/30"></div>
               </div>
-              <div className="flex flex-wrap gap-2">
-                {requiredMissing.map((s: any, i: number) => (
-                  <span key={i} className="px-3 py-1.5 bg-red-50 border border-red-200 text-red-600 text-sm font-medium rounded-full">
-                    {s.name}
-                  </span>
-                ))}
-                {requiredMissing.length === 0 && <span className="text-[var(--color-muted)] text-sm italic">You have all required skills!</span>}
+              <div className="w-8 h-8 rounded-lg bg-[var(--color-background)] border border-[var(--color-accent)] flex items-center justify-center">
+                <div className="w-4 h-4 rounded-full bg-[var(--color-accent)]"></div>
+              </div>
+              <div className="w-8 h-8 rounded-lg bg-[var(--color-surface)] border border-[var(--color-border)] shadow-sm flex items-center justify-center">
+                <div className="w-4 h-4 rounded-full bg-[var(--color-muted)]/30"></div>
               </div>
             </div>
           </div>
+          
         </div>
-      </div>
-
-      {/* INTERVIEW QUESTIONS */}
-      <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6 shadow-sm">
-        <div className="mb-8 border-b border-[var(--color-border)] pb-4">
-          <h3 className="text-xl font-bold text-[var(--color-foreground)] flex items-center">
-            <span className="w-8 h-8 rounded-lg bg-blue-50 text-[var(--color-accent)] border border-blue-100 flex items-center justify-center mr-3">
-              <Briefcase className="w-5 h-5" />
-            </span>
-            Instant & Personalized Interview Prep
-          </h3>
-          <p className="text-[var(--color-muted)] mt-1 ml-11 text-sm">Tailored questions generated by AI based on your exact profile and target role.</p>
-        </div>
-        
-        <div>
-          {[
-            { title: "Technical Questions", list: groupedQs.technical, key: "technical" },
-            { title: "Project-Based", list: groupedQs.project, key: "project" },
-            { title: "Scenario & Behavioral", list: groupedQs.scenario, key: "scenario" },
-          ].map((group) => {
-            if (group.list.length === 0) return null;
-            return (
-              <div key={group.key} className="mb-8 last:mb-0">
-                <div className="flex items-center mb-4">
-                  {getQIcon(group.key)}
-                  <h4 className="text-lg font-semibold text-[var(--color-foreground)] ml-2">{group.title}</h4>
-                  <span className="ml-3 px-2 py-0.5 rounded-full bg-[var(--color-background)] border border-[var(--color-border)] text-[var(--color-muted)] text-xs font-medium">
-                    {group.list.length}
-                  </span>
-                </div>
-                <div className="space-y-3">
-                  {group.list.map((q: any, idx: number) => {
-                    const uniqueId = `${group.key}-${idx}`;
-                    const isOpen = openIndex === uniqueId;
-                    return (
-                      <div 
-                        key={uniqueId} 
-                        className={`border rounded-lg transition-all duration-200 ${
-                          isOpen ? 'border-[var(--color-accent)] bg-blue-50/30' : 'border-[var(--color-border)] bg-[var(--color-surface)] hover:bg-[var(--color-background)]'
-                        }`}
-                      >
-                        <button
-                          onClick={() => setOpenIndex(isOpen ? null : uniqueId)}
-                          className="w-full flex items-center justify-between p-4 text-left focus:outline-none"
-                        >
-                          <div className="flex items-start">
-                            <span className="text-[var(--color-muted)] font-mono text-sm mr-3 mt-0.5">{idx + 1}.</span>
-                            <span className={`font-medium text-sm leading-relaxed ${isOpen ? 'text-[var(--color-accent)]' : 'text-[var(--color-foreground)]'}`}>
-                              {q.question}
-                            </span>
-                          </div>
-                          <div className="ml-4 flex-shrink-0 text-[var(--color-muted)]">
-                            {isOpen ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
-                          </div>
-                        </button>
-                        
-                        {isOpen && (
-                          <div className="px-4 pb-4 pt-1 ml-6 space-y-4">
-                            {q.answer && (
-                              <div className="p-4 bg-[var(--color-surface)] border border-[var(--color-border)] rounded-lg">
-                                <h5 className="text-xs font-semibold text-[var(--color-muted)] uppercase tracking-wider mb-2">Suggested Answer</h5>
-                                <p className="text-sm text-[var(--color-foreground)] leading-relaxed">{q.answer}</p>
-                              </div>
-                            )}
-                            {q.key_points && q.key_points.length > 0 && (
-                              <div>
-                                <h5 className="text-xs font-semibold text-[var(--color-muted)] uppercase tracking-wider mb-2">Key Points to Mention</h5>
-                                <ul className="space-y-1.5">
-                                  {q.key_points.map((kp: string, i: number) => (
-                                    <li key={i} className="flex items-start text-sm text-[var(--color-foreground)]">
-                                      <CheckCircle2 className="w-4 h-4 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
-                                      <span>{kp}</span>
-                                    </li>
-                                  ))}
-                                </ul>
-                              </div>
-                            )}
-                            
-                            <div className="flex items-center space-x-3 pt-2">
-                              {q.skill && (
-                                <span className="px-2.5 py-1 rounded bg-[var(--color-background)] border border-[var(--color-border)] text-xs text-[var(--color-foreground)] font-medium">
-                                  Target Skill: <span className="font-semibold">{q.skill}</span>
-                                </span>
-                              )}
-                              {q.is_gap && (
-                                <span className="px-2.5 py-1 rounded bg-red-50 border border-red-200 text-xs text-red-600 font-medium">
-                                  Skill Gap Question
-                                </span>
-                              )}
-                              {q.relevance_score !== undefined && (
-                                <span className="px-2.5 py-1 rounded bg-[var(--color-background)] border border-[var(--color-border)] text-xs text-[var(--color-muted)] font-medium">
-                                  Relevance: {Math.round(q.relevance_score * 100)}%
-                                </span>
-                              )}
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* COURSE RECOMMENDATIONS */}
-      {courses && Object.keys(courses).length > 0 && (
-        <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6 shadow-sm flex flex-col items-center justify-center text-center">
-          <div className="w-16 h-16 bg-blue-50 border border-blue-100 rounded-full flex items-center justify-center mb-4">
-            <GraduationCap className="w-8 h-8 text-[var(--color-accent)]" />
-          </div>
-          <h3 className="text-lg font-bold text-[var(--color-foreground)] mb-2">Ready to close your skill gaps?</h3>
-          <p className="text-sm text-[var(--color-muted)] mb-6">
-            We've curated a personalized roadmap with recommended courses for each of your missing skills.
-          </p>
-          <Link
-            href="/roadmap"
-            className="flex items-center justify-center px-6 py-3 bg-[var(--color-accent)] text-white font-semibold rounded-xl shadow-md hover:bg-[var(--color-accent-hover)] transition-all"
-          >
-            View Career Roadmap <ArrowRight className="w-4 h-4 ml-2" />
-          </Link>
-        </div>
-      )}
-
+      </main>
     </div>
   );
 }

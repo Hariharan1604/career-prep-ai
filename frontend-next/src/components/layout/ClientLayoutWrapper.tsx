@@ -12,18 +12,20 @@ function RouteGuard({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
   const isAuthPage = pathname === '/login' || pathname === '/signup';
+  const isLandingPage = pathname === '/';
+  const isPublicPage = isAuthPage || isLandingPage || ['/features', '/about', '/contact'].includes(pathname);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
-    // If auth finishes loading and there is no user, and we're not already on an auth page, redirect to login
-    if (!loading && !user && !isAuthPage) {
+    // If auth finishes loading and there is no user, and we're not on a public page, redirect to login
+    if (!loading && !user && !isPublicPage) {
       router.push('/login');
     }
-    // If auth finishes loading and there is a user, but we're on an auth page, redirect to home
-    if (!loading && user && isAuthPage) {
-      router.push('/');
+    // If auth finishes loading and there is a user, but we're on a public page, redirect to dashboard
+    if (!loading && user && isPublicPage) {
+      router.push('/dashboard');
     }
-  }, [user, loading, pathname, router, isAuthPage]);
+  }, [user, loading, pathname, router, isPublicPage]);
 
   // Close mobile menu when pathname changes
   useEffect(() => {
@@ -41,17 +43,17 @@ function RouteGuard({ children }: { children: React.ReactNode }) {
   }
 
   // If redirecting to login, render nothing to prevent a flash of the protected page
-  if (!user && !isAuthPage) {
+  if (!user && !isPublicPage) {
     return null;
   }
 
   return (
     <>
-      {!isAuthPage && <Sidebar mobileMenuOpen={mobileMenuOpen} setMobileMenuOpen={setMobileMenuOpen} />}
+      {!isPublicPage && <Sidebar mobileMenuOpen={mobileMenuOpen} setMobileMenuOpen={setMobileMenuOpen} />}
       <div className="flex flex-1 flex-col overflow-hidden w-full">
-        {!isAuthPage && <TopNav setMobileMenuOpen={setMobileMenuOpen} />}
-        <main className={`flex-1 overflow-y-auto ${!isAuthPage ? 'p-4 md:p-8' : ''}`}>
-          <div className={`mx-auto ${!isAuthPage ? 'max-w-7xl' : 'h-full'}`}>
+        {!isPublicPage && <TopNav setMobileMenuOpen={setMobileMenuOpen} />}
+        <main className={`flex-1 overflow-y-auto ${!isPublicPage ? 'p-4 md:p-8' : ''}`}>
+          <div className={`mx-auto ${!isPublicPage ? 'max-w-7xl' : 'h-full'}`}>
             {children}
           </div>
         </main>
